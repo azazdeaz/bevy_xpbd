@@ -202,6 +202,8 @@
 
 pub mod joints;
 pub mod penetration;
+#[cfg(feature = "3d")]
+pub mod volume;
 
 mod angular_constraint;
 mod position_constraint;
@@ -209,6 +211,8 @@ mod position_constraint;
 pub use angular_constraint::AngularConstraint;
 pub use joints::*;
 pub use penetration::*;
+#[cfg(feature = "3d")]
+pub use volume::*;
 pub use position_constraint::PositionConstraint;
 
 use crate::prelude::*;

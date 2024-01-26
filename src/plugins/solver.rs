@@ -50,6 +50,7 @@ impl Plugin for SolverPlugin {
                 solve_constraint::<SphericalJoint, 2>,
                 solve_constraint::<PrismaticJoint, 2>,
                 solve_constraint::<DistanceJoint, 2>,
+                solve_constraint::<VolumeConstraint, 4>,
             )
                 .chain()
                 .in_set(SubstepSet::SolveConstraints),

@@ -3,9 +3,11 @@
 //! See [`PhysicsDebugPlugin`].
 
 mod configuration;
+mod particle_drag;
 mod renderer;
 
 pub use configuration::*;
+pub use particle_drag::*;
 pub use renderer::*;
 
 use crate::prelude::*;

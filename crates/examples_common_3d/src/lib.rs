@@ -11,20 +11,24 @@ pub struct XpbdExamplePlugin;
 
 impl Plugin for XpbdExamplePlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins((PhysicsPlugins::default(), FrameTimeDiagnosticsPlugin))
-            .add_state::<AppState>()
-            .add_systems(Startup, setup)
-            .add_systems(
-                OnEnter(AppState::Paused),
-                |mut time: ResMut<Time<Physics>>| time.pause(),
-            )
-            .add_systems(
-                OnExit(AppState::Paused),
-                |mut time: ResMut<Time<Physics>>| time.unpause(),
-            )
-            .add_systems(Update, update_fps_text)
-            .add_systems(Update, pause_button)
-            .add_systems(Update, step_button.run_if(in_state(AppState::Paused)));
+        app.add_plugins((
+            PhysicsPlugins::default(),
+            FrameTimeDiagnosticsPlugin,
+            DragParticlePlugin,
+        ))
+        .add_state::<AppState>()
+        .add_systems(Startup, setup)
+        .add_systems(
+            OnEnter(AppState::Paused),
+            |mut time: ResMut<Time<Physics>>| time.pause(),
+        )
+        .add_systems(
+            OnExit(AppState::Paused),
+            |mut time: ResMut<Time<Physics>>| time.unpause(),
+        )
+        .add_systems(Update, update_fps_text)
+        .add_systems(Update, pause_button)
+        .add_systems(Update, step_button.run_if(in_state(AppState::Paused)));
     }
 }
 
