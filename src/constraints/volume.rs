@@ -68,16 +68,16 @@ impl XpbdConstraint<4> for VolumeConstraint {
             return;
         }
         let volume = Self::volume(&p1, &p2, &p3, &p4);
-        println!("p1 {}, p2 {}, p3 {}, p4 {}", p1, p2, p3, p4);
+        // println!("p1 {}, p2 {}, p3 {}, p4 {}", p1, p2, p3, p4);
         let residual = -(volume - self.rest_volume) / (w + alpha);
-        println!(
-            "volume {}, rest_volume, {}, residual {}",
-            volume, self.rest_volume, residual
-        );
+        // println!(
+        //     "volume {}, rest_volume, {}, residual {}",
+        //     volume, self.rest_volume, residual
+        // );
         for (index, gradient) in gradients.into_iter().enumerate() {
             let inverse_mass = bodies[index].inverse_mass.0;
             let push = gradient * residual * inverse_mass;
-            println!("push {}", push);
+            // println!("push {}", push);
             if push.is_nan() {
                 panic!("push is nan");
             }
@@ -103,6 +103,13 @@ pub fn draw_debug_volume_constraints(
         .collect_tuple() else {
             return;
         };
+        let center = (p1 + p2 + p3 + p4) / 4.0;
+        // Shrink the tetrahedron to make it easier to see
+        let scale = 0.9;
+        let p1 = center + (p1 - center) * scale;
+        let p2 = center + (p2 - center) * scale;
+        let p3 = center + (p3 - center) * scale;
+        let p4 = center + (p4 - center) * scale;
 
         gizmos.line(p1, p2, Color::RED);
         gizmos.line(p1, p3, Color::RED);

@@ -15,11 +15,12 @@ fn main() {
             brightness: 2.0,
             ..default()
         })
-        .insert_resource(SubstepCount(1))
-        // .insert_resource(Gravity(Vector::NEG_Y * 9.81 * 2.0))
+        .insert_resource(SubstepCount(40))
+        .insert_resource(Gravity(Vector::NEG_Y * 9.81 * 2.0))
+        // .insert_resource(Gravity(Vector::ZERO))
         .insert_resource(MeshData::bunny().scaled(4.0))
         .add_systems(Startup, (setup, ui))
-        .add_systems(Update, (movement, draw_debug_volume_constraints))
+        .add_systems(Update, (movement, draw_debug_volume_constraints, draw_debug_edge_constraints))
         .run();
 }
 
@@ -45,7 +46,7 @@ fn setup(
         Collider::cuboid(1.0, 1.0, 1.0),
     ));
 
-    let particle_radius = 0.6;
+    let particle_radius = 0.08;
     let particle_mesh = meshes.add(
         Mesh::try_from(shape::Icosphere {
             radius: particle_radius as f32,
@@ -91,7 +92,17 @@ fn setup(
             &verts[chunk[2]],
             &particles[chunk[3]],
             &verts[chunk[3]],
-        ));
+        ).with_compliance(0.1));
+    }
+
+    // Spawn edge constraints
+    for chunk in mesh_data.tetEdgeIds.chunks_exact(2) {
+        commands.spawn(EdgeConstraint::new(
+            &particles[chunk[0]],
+            &verts[chunk[0]],
+            &particles[chunk[1]],
+            &verts[chunk[1]],
+        ).with_compliance(0.1));
     }
 
     // // Spawn the rest of the particles, connecting each one to the previous one with joints
@@ -125,8 +136,8 @@ fn setup(
 
     // Camera
     commands.spawn(Camera3dBundle {
-        transform: Transform::from_translation(Vec3::new(0.0, 12.0, 40.0))
-            .looking_at(Vec3::Y * 5.0, Vec3::Y),
+        transform: Transform::from_translation(Vec3::new(0.0, 4.0, 14.0))
+            .looking_at(Vec3::Y, Vec3::Y),
         ..default()
     });
 }
@@ -234,7 +245,7 @@ impl MeshData {
                 -0.333333,
             ],
             tetIds: vec![0, 1, 2, 3],
-            tetEdgeIds: vec![0, 1, 2, 3, 4, 5],
+            tetEdgeIds: vec![0, 1, 0, 2, 0, 3, 1, 2, 1, 3, 2, 3],
             tetSurfaceTriIds: vec![0, 1, 2, 0, 1, 3, 0, 2, 3, 1, 2, 3],
         }
     }
