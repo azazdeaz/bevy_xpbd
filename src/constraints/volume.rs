@@ -111,12 +111,13 @@ pub fn draw_debug_volume_constraints(
         let p3 = center + (p3 - center) * scale;
         let p4 = center + (p4 - center) * scale;
 
-        gizmos.line(p1, p2, Color::RED);
-        gizmos.line(p1, p3, Color::RED);
-        gizmos.line(p1, p4, Color::RED);
-        gizmos.line(p2, p3, Color::RED);
-        gizmos.line(p2, p4, Color::RED);
-        gizmos.line(p3, p4, Color::RED);
+        let color = Color::hex("#F2A2E5").unwrap();
+        gizmos.line(p1, p2, color);
+        gizmos.line(p1, p3, color);
+        gizmos.line(p1, p4, color);
+        gizmos.line(p2, p3, color);
+        gizmos.line(p2, p4, color);
+        gizmos.line(p3, p4, color);
     }
 }
 

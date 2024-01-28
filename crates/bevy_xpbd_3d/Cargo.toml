@@ -50,7 +50,6 @@ derive_more = "0.99"
 indexmap = "2.0.0"
 fxhash = "0.2.1"
 itertools = "0.11"
-bevy-inspector-egui = "0.22.1"
 
 [dev-dependencies]
 examples_common_3d = { path = "../examples_common_3d" }
@@ -58,6 +57,7 @@ benches_common_3d = { path = "../benches_common_3d" }
 approx = "0.5"
 criterion = { version = "0.5", features = ["html_reports"] }
 insta = "1.0"
+bevy-inspector-egui = "0.22.1"
 
 [[example]]
 name = "dynamic_character_3d"

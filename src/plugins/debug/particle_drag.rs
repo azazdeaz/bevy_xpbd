@@ -10,7 +10,7 @@ impl Plugin for DragParticlePlugin {
 }
 
 #[derive(Debug, Clone, Copy)]
-struct DragInfo {
+struct DragState {
     id: Entity,
     grab_distance: f32,
     grab_inverse_mass: InverseMass,
@@ -32,7 +32,7 @@ fn drag_particles(
     buttons: Res<Input<MouseButton>>,
     windows: Query<&Window>,
     mut gizmos: Gizmos,
-    mut drag_state: Local<Option<DragInfo>>,
+    mut drag_state: Local<Option<DragState>>,
 ) {
     let Some(cursor_position) = windows.single().cursor_position() else {
         warn!("No cursor position");
@@ -48,9 +48,26 @@ fn drag_particles(
         return;
     };
 
+    let mut update_drag_state =
+        |new_drag_state: Option<DragState>,
+         particles: &mut Query<'_, '_, (RigidBodyQuery, &DragParticle)>| {
+            if let Some(state) = drag_state.take() {
+                if let Ok((mut body, _)) = particles.get_mut(state.id) {
+                    // Reset the inverse_mass of the released body
+                    body.inverse_mass.0 = state.grab_inverse_mass.0;
+                }
+            }
+            *drag_state = new_drag_state;
+            if let Some(state) = new_drag_state {
+                if let Ok((mut body, _)) = particles.get_mut(state.id) {
+                    // Set inverse_mass to 0 to make the dragged body immovable
+                    body.inverse_mass.0 = 0.0;
+                }
+            }
+        };
+
     if buttons.just_pressed(MouseButton::Left) {
-        info!("Clicked");
-        let mut closest: Option<(DragInfo, f32)> = None;
+        let mut closest: Option<(DragState, f32)> = None;
         for body in particles.into_iter().filter_map(
             |(body, drag)| {
                 if drag.enabled {
@@ -64,10 +81,9 @@ fn drag_particles(
             let particle_from_origin = body.position.0 - ray.origin;
             let closest_point_on_ray = ray.direction * particle_from_origin.dot(ray.direction);
             let distance = (particle_from_origin - closest_point_on_ray).length();
-            info!("Distance: {}", distance);
             if distance < 0.5 && (closest.is_none() || distance < closest.unwrap().1) {
                 closest = Some((
-                    DragInfo {
+                    DragState {
                         id: body.entity,
                         grab_distance: body.position.0.distance(ray.origin),
                         grab_inverse_mass: *body.inverse_mass,
@@ -77,30 +93,19 @@ fn drag_particles(
             }
         }
         if let Some((info, _)) = closest.take() {
-            *drag_state = Some(info);
-
-            // Set inverse_mass to 0 to make the dragged body immovable
-            if let Ok((mut body, _)) = particles.get_mut(info.id) {
-                body.inverse_mass.0 = 0.0;
-            }
+            update_drag_state(Some(info), &mut particles);
         }
     } else if buttons.just_released(MouseButton::Left) {
-        // Reset drag_state and inverse_mass
-        if let Some(info) = drag_state.take() {
-            if let Ok((mut body, _)) = particles.get_mut(info.id) {
-                body.inverse_mass.0 = info.grab_inverse_mass.0;
-            }
-        }
+        update_drag_state(None, &mut particles);
     }
 
     if let Some(info) = &*drag_state {
         if let Ok((mut body, _)) = particles.get_mut(info.id) {
-            info!("Dragging {:?}", info.id);
             let new_pos = ray.origin + ray.direction * info.grab_distance;
             body.position.0 = new_pos;
             gizmos.cuboid(
                 Transform::from_translation(new_pos).with_scale(Vec3::splat(0.1)),
-                Color::PINK,
+                Color::hex("#568C4D").unwrap(),
             );
         }
     }

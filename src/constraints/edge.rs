@@ -78,7 +78,7 @@ pub fn draw_debug_edge_constraints(
             return;
         };
 
-        gizmos.line(p1, p2, Color::BLUE);
+        gizmos.line(p1, p2, Color::hex("#D95B66").unwrap());
     }
 }
 

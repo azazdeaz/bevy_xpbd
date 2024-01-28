@@ -105,12 +105,13 @@ pub fn draw_debug_isometric_bend_constraints(
             return;
         };
 
-        gizmos.line(p1, p2, Color::PURPLE);
-        gizmos.line(p1, p3, Color::PURPLE);
-        gizmos.line(p1, p4, Color::PURPLE);
-        gizmos.line(p2, p3, Color::PURPLE);
-        gizmos.line(p2, p4, Color::PURPLE);
-        gizmos.line(p3, p4, Color::PURPLE);
+        let color = Color::hex("#D98162").unwrap();
+        gizmos.line(p1, p2, color);
+        gizmos.line(p1, p3, color);
+        gizmos.line(p1, p4, color);
+        gizmos.line(p2, p3, color);
+        gizmos.line(p2, p4, color);
+        gizmos.line(p3, p4, color);
     }
 }
 
