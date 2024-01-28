@@ -40,7 +40,7 @@ impl XpbdConstraint<4> for VolumeConstraint {
         // self.tangent_lagrange = 0.0;
     }
 
-    /// Solves overlap between two bodies.
+    /// Change the particle's position to satisfy the constraint.
     fn solve(&mut self, bodies: [&mut RigidBodyQueryItem; 4], dt: Scalar) {
         let alpha = self.compliance / (dt * dt);
         let p1 = bodies[0].current_position();
@@ -162,6 +162,7 @@ impl VolumeConstraint {
         v1.cross(v2).dot(v3) / 6.0
     }
 
+    /// Sets the constrains's compliance (inverse of stiffness, meters / Newton).
     pub fn with_compliance(mut self, compliance: Scalar) -> Self {
         self.compliance = compliance;
         self

@@ -95,6 +95,7 @@ impl EdgeConstraint {
         }
     }
 
+    /// Sets the constrains's compliance (inverse of stiffness, meters / Newton).
     pub fn with_compliance(mut self, compliance: Scalar) -> Self {
         self.compliance = compliance;
         self

@@ -200,24 +200,28 @@
 //! where `q_i` is the [rotation](Rotation) of body `i` and `r_i` is a vector pointing from the body's center of mass to some
 //! attachment position.
 
+#[cfg(feature = "3d")]
+pub mod edge;
+#[cfg(feature = "3d")]
+pub mod isometric_bending;
 pub mod joints;
 pub mod penetration;
 #[cfg(feature = "3d")]
 pub mod volume;
-#[cfg(feature = "3d")]
-pub mod edge;
 
 mod angular_constraint;
 mod position_constraint;
 
 pub use angular_constraint::AngularConstraint;
-pub use joints::*;
-pub use penetration::*;
-#[cfg(feature = "3d")]
-pub use volume::*;
 #[cfg(feature = "3d")]
 pub use edge::*;
+#[cfg(feature = "3d")]
+pub use isometric_bending::*;
+pub use joints::*;
+pub use penetration::*;
 pub use position_constraint::PositionConstraint;
+#[cfg(feature = "3d")]
+pub use volume::*;
 
 use crate::prelude::*;
 use bevy::ecs::entity::MapEntities;
