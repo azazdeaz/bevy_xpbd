@@ -10,8 +10,6 @@ use bevy::{
 };
 use itertools::Itertools;
 
-/// A constraint between two bodies that prevents overlap with a given compliance.
-///
 /// A compliance of 0.0 resembles a constraint with infinite stiffness, so the bodies should not have any overlap.
 #[derive(Component, Clone, Copy, Debug, PartialEq, Reflect)]
 #[cfg_attr(feature = "serialize", derive(serde::Serialize, serde::Deserialize))]

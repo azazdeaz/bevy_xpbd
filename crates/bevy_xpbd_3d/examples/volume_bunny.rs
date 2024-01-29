@@ -62,7 +62,8 @@ fn main() {
         })
         .insert_resource(SubstepCount(config.substep_count))
         .insert_resource(Gravity(Vector::NEG_Y * config.gravity))
-        .insert_resource(MeshData::bunny().scaled(1.0))
+        .insert_resource(MeshData::bunny().scaled(4.0))
+        // .insert_resource(MeshData::one_tetrade().scaled(1.0))
         .add_systems(Startup, (setup, ui))
         .add_systems(
             Update,

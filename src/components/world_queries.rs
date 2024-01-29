@@ -69,21 +69,13 @@ impl<'w> RigidBodyQueryItem<'w> {
     /// Returns the current position of the body. This is a sum of the [`Position`] and
     /// [`AccumulatedTranslation`] components.
     pub fn current_position(&self) -> Vector {
-        let pos = self.position.0
+        self.position.0
             + get_pos_translation(
                 &self.accumulated_translation,
                 &self.previous_rotation,
                 &self.rotation,
                 &self.center_of_mass,
-            );
-            if pos.is_nan() {
-                println!("accumulated_translation: {:?}", self.accumulated_translation);
-                println!("previous_rotation: {:?}", self.previous_rotation);
-                println!("rotation: {:?}", self.rotation);
-                println!("center_of_mass: {:?}", self.center_of_mass);
-                panic!("current_position is nan");
-            }
-            pos
+            )
     }
 
     /// Returns the [dominance](Dominance) of the body.
